@@ -1,0 +1,17 @@
+interrupts:
+#   pin   name
+    17    stopinterrupt
+    22    startinterrupt
+    27    quitinterrupt
+
+inputs:
+#   pin   name
+
+outputs:
+#   pin   name
+    14    1:tønne
+    15    1:mikrofon
+    18    2:tønne
+    23    2:mikrofon
+    24    3:tønne
+    25    3:mikrofon
