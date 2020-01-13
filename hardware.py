@@ -100,7 +100,7 @@ class Hardware():
 
 
     def write(self, target, cmd):
-#        print ('writing {} to {}'.format(cmd, target))
+        print ('writing to pin {:>2}: [{:6}] - {}'.format(self.targets[target]['pin'], cmd, target))
         if cmd == 'on':     self.buffer[target] |= 1
         if cmd == 'off':    self.buffer[target] &= 0
         if cmd == 'toggle': self.buffer[target]  = (self.buffer[target] + 1) % 2
