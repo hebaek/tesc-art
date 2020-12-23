@@ -1,3 +1,17 @@
+react-table:
+#  ---------------+------+------------------+--------+-------------------+--------------
+#   Variable name | comp | value            | cmd    | target            | parameters
+#  ---------------+------+------------------+--------+-------------------+--------------
+    var(temperatur)  ==    0                  start    chain_1
+    var(temperatur) !==    0                  stop     chain_1
+    var(temperatur)  IN    (20, 22)           start    chain_2
+    var(temperatur) !IN    (20, 22)           stop     chain_2
+    var(temperatur)  <=    var(temp2)         start    chain_3
+    var(temperatur)  >=    var(temp2)         start    chain_3
+    var(temp2)       <     var(temperatur)    set      var(temp2)          0
+
+
+
 interrupts:
 #  --------------------+--------------------+--------+-------------------+--------------
 #   GPIO or keyboard   | name or key        | cmd    | target            | parameters
@@ -15,6 +29,8 @@ chain: boot
 #  --------------------+--------------------+--------+-------------------+--------------
                                               start    chain_1
                                               start    chain_2
+                                              read     var(temperatur)     termometer
+                                              react    var(temperatur)
           10:00                               stop     boot
 
 
