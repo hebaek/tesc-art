@@ -45,7 +45,7 @@ toggle <target>
 random <target>
 ```
 
-The specian chain `boot` is the only one started automaticlly, you should probably only use this to start the _real_ chains.
+The special chain `boot` is the only one started automaticlly, you should probably only use this to start the _real_ chains.
 
 
 ## Licence
