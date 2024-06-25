@@ -14,11 +14,6 @@ This tool lets you control the GPIO of a Raspberry Pi using simple lists of time
 * In the tesc-art directory, run `make install`.
 * Copy the example files and start scripting!
 
-* To run tesc-art on startup, add the following to rc.local (before `exit 0`:
-```
-/usr/local/src/tesc-art.py > <your favorite logfile> &
-```
-
 ## The files you need to worry about
 
 ### tesc-art.conf
@@ -50,7 +45,7 @@ toggle <target>
 random <target>
 ```
 
-The specian chain `boot` is the only one started automaticlly, you should probably only use this to start the _real_ chains.
+The special chain `boot` is the only one started automaticlly, you should probably only use this to start the _real_ chains.
 
 
 ## Licence
