@@ -13,12 +13,16 @@ react-table:
 
 
 interrupts:
-#  --------------------+--------------------+--------+-------------------+--------------
-#   GPIO or keyboard   | name or key        | cmd    | target            | parameters
-#  --------------------+--------------------+--------+-------------------+--------------
-    GPIO                 stopinterrupt        start    stopchain
-    GPIO                 startinterrupt       start    startchain
-    GPIO                 quitinterrupt        quit
+#  --------------------+---------------------+--------+-------------------+--------------
+#   boot, GPIO, key    | name, key or time   | cmd    | target            | parameters
+#   or time            | yyyy-mm-dd hh:mm:ss |        |                   |
+#  --------------------+---------------------+--------+-------------------+--------------
+    boot                                       start    boot
+    GPIO                 stopinterrupt         start    stopchain
+    GPIO                 startinterrupt        start    startchain
+    GPIO                 quitinterrupt         quit
+    key                  q                     quit
+    time                 2024-06-25 12:13:14   start    timechain
 
 
 
