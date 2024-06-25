@@ -45,7 +45,7 @@ class Main():
         if self.mainthread.is_alive():
             self.eventqueue.put(Event(['quit']))
             self.mainthread.join()
-        
+
         self.mainthread = threading.Thread(target=self.main_thread, args=(self.eventqueue,))
 
         self.interrupts = {}
@@ -126,7 +126,7 @@ class Main():
 
         ''' Input commands '''
         if event.cmd == 'read':
-            pass
+            self.hardware.read(event.target)
 
         return False
 

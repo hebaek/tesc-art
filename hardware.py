@@ -94,6 +94,7 @@ class Hardware():
 
 
     def read(self, target):
+        print ('reading from pin {:>2} to variable {}'.format(self.targets[target]['pin'], target))
         if config.REAL_PI:
             self.buffer[target] = GPIO.input(self.targets[target]['pin'])
 
