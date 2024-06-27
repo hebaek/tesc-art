@@ -1,48 +1,97 @@
-react-table:
-#  ---------------+------+------------------+--------+-------------------+--------------
+variables:
+#  ---------------+------+------------------+--------+-------------------+---------------
+#                 |  ==  | equal to value
+#                 |  !=  | not equal to value
+#                 |  >=  | greater than or equal to value
+#                 |  <=  | less than or equal to value
+#                 |  >   | greater than value
+#                 |  <   | less than value
+#                 |  IN  | value is in range
+#                 | !IN  | value is not in range
+#  ---------------+------+------------------+--------+-------------------+---------------
 #   Variable name | comp | value            | cmd    | target            | parameters
-#  ---------------+------+------------------+--------+-------------------+--------------
+#  ---------------+------+------------------+--------+-------------------+---------------
     temperatur       ==    0                  start    chain_1
-    temperatur      !==    0                  stop     chain_1
-    temperatur       IN    (20, 22)           start    chain_2
-    temperatur      !IN    (20, 22)           stop     chain_2
+    temperatur       !=    1                  stop     chain_1
     temperatur       <=    temp2              start    chain_3
-    temperatur       >=    temp2              start    chain_3
-    temp2            <     temperatur         set      temp2               0
+    temperatur       >=    temp2              stop     chain_3
+    temperatur       IN    (20,22)            start    chain_2
+    temperatur      !IN    (20,22)            set      temp2               -10
+    temp2            <     temperatur         set      temp2                1
+    temp2            >     temperatur         set      temp2               -1
 
 
 
 interrupts:
-#  --------------------+---------------------+--------+-------------------+--------------
-#   boot, GPIO, key    | name, key or time   | cmd    | target            | parameters
-#   or time            | yyyy-mm-dd hh:mm:ss |        |                   |
-#  --------------------+---------------------+--------+-------------------+--------------
-    boot                                       start    boot
-    GPIO                 stopinterrupt         start    stopchain
-    GPIO                 startinterrupt        start    startchain
-    GPIO                 quitinterrupt         quit
-    key                  q                     quit
-    time                 2024-06-25 12:13:14   start    timechain
+#  -----------------------------------------+--------+-------------------+---------------
+#   name                                    | cmd    | target            | parameters
+#  -----------------------------------------+--------+-------------------+---------------
+    stopinterrupt                             start    stopchain
+    startinterrupt                            start    startchain
+    quitinterrupt                             quit
+
+
+
+schedule:
+#  -------------------+---------------------+--------+-------------------+--------------
+#   boot or           | YYYY-MM-DD/hh:mm:ss |        |                   |
+#   date or day       |    weekday/hh:mm:ss | cmd    | target            | parameters
+#  -------------------+---------------------+--------+-------------------+--------------
+    boot                                      start    boot
+
+    date                                 00   start    startchain
+    date                                 10   start    startchain
+    date                                 20   start    startchain
+    date                                 30   start    startchain
+    date                                 40   start    startchain
+    date                                 50   start    startchain
+    date                              16:22   start    startchain
+    date                           14:16:22   start    startchain
+    date                        25/14:16:22   start    startchain
+    date                     06-25/14:16:22   start    startchain
+    date                2024-06-25/14:16:22   start    startchain
+
+    day                    mondays/14:16:22   quit
+    day                   tuesdays/14:16:22   quit
+    day                        thursdays/00   start    startchain
+    day                        thursdays/10   start    startchain
+    day                        thursdays/20   start    startchain
+    day                        thursdays/30   start    startchain
+    day                        thursdays/40   start    startchain
+    day                        thursdays/50   start    startchain
+
+
+
+
+
+
+#########################################################################################
+#
+#   Chains
+#
+#########################################################################################
 
 
 
 chain: boot
-#  --------------------+--------------------+--------+-------------------+--------------
+#  --------------------+--------------------+--------+-------------------+---------------
 #     delay before cmd |   +/- random delay |        |                   |
-#   dd:hh:mm:ss.micros | dd:hh:mm:ss.micros | cmd    | target            | parameters
-#  --------------------+--------------------+--------+-------------------+--------------
-                                              start    chain_1
-                                              start    chain_2
-                                              read     temperatur          termometer
-                                              react    temperatur
-          10:00                               stop     boot
+#   dd hh:mm:ss.micros | dd hh:mm:ss:micros | cmd    | target            | parameters
+#  --------------------+--------------------+--------+-------------------+---------------
+                                             start    chain_1
+                                             start    chain_2
+             2                               read     temperatur          termometer
+             1                               react    temperatur
+             1                               react    temp2
+         10:00                               stop     boot
+
 
 
 chain: chain_1
-#  -----------------------------------------+--------+------------+--------------
-#     delay before cmd |   +/- random delay |        |            |
-#   dd hh:mm:ss.micros | dd hh:mm:ss.micros | cmd    | target     | data
-#  -----------------------------------------+--------+------------+--------------
+#  --------------------+--------------------+--------+-------------------+---------------
+#     delay before cmd |   +/- random delay |        |                   |
+#   dd hh:mm:ss.micros | dd hh:mm:ss:micros | cmd    | target            | parameters
+#  --------------------+--------------------+--------+-------------------+---------------
               0.5                   .25       on       1:tønne
               0.5                   .25       off      1:mikrofon
               0.5                   .25       toggle   2:tønne
@@ -67,10 +116,10 @@ chain: chain_1
 
 
 chain: chain_2
-#  -----------------------------------------+--------+------------+--------------
-#     delay before cmd |   +/- random delay |        |            |
-#   dd hh:mm:ss.micros | dd hh:mm:ss.micros | cmd    | target     | data
-#  -----------------------------------------+--------+------------+--------------
+#  --------------------+--------------------+--------+-------------------+---------------
+#     delay before cmd |   +/- random delay |        |                   |
+#   dd hh:mm:ss.micros | dd hh:mm:ss:micros | cmd    | target            | parameters
+#  --------------------+--------------------+--------+-------------------+---------------
               1                               on       3:tønne
               0                               off      3:mikrofon
               1                               off      3:tønne
@@ -78,11 +127,20 @@ chain: chain_2
 
 
 
-chain: startchain
-#  --------------------+--------------------+--------+-------------------+--------------
+chain: chain_3
+#  --------------------+--------------------+--------+-------------------+---------------
 #     delay before cmd |   +/- random delay |        |                   |
-#   dd hh:mm:ss.micros | dd hh:mm:ss.micros | cmd    | target            | parameters
-#  --------------------+--------------------+--------+-------------------+--------------
+#   dd hh:mm:ss.micros | dd hh:mm:ss:micros | cmd    | target            | parameters
+#  --------------------+--------------------+--------+-------------------+---------------
+
+
+
+
+chain: startchain
+#  --------------------+--------------------+--------+-------------------+---------------
+#     delay before cmd |   +/- random delay |        |                   |
+#   dd hh:mm:ss.micros | dd hh:mm:ss:micros | cmd    | target            | parameters
+#  --------------------+--------------------+--------+-------------------+---------------
                                               reset    boot
                                               start    boot
                                               stop     startchain
@@ -90,10 +148,10 @@ chain: startchain
 
 
 chain: stopchain
-#  --------------------+--------------------+--------+-------------------+--------------
+#  --------------------+--------------------+--------+-------------------+---------------
 #     delay before cmd |   +/- random delay |        |                   |
-#   dd hh:mm:ss.micros | dd hh:mm:ss.micros | cmd    | target            | parameters
-#  --------------------+--------------------+--------+-------------------+--------------
+#   dd hh:mm:ss.micros | dd hh:mm:ss:micros | cmd    | target            | parameters
+#  --------------------+--------------------+--------+-------------------+---------------
                                               stop     chain_1
                                               stop     chain_2
                                               stop     stopchain

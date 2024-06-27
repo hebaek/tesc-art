@@ -5,18 +5,14 @@ interrupts:
     27    quitinterrupt
 
 inputs:
-#   pin   range     name
-    11    (0, 1)    termometer
+#   pin   name
+    16    termometer
 
 outputs:
-#   pin   range     name
-    14    binary    1:tønne
-    15    binary    1:mikrofon
-    18    binary    2:tønne
-    23    binary    2:mikrofon
-    24    binary    3:tønne
-    25    binary    3:mikrofon
-
-variables:
-#   name            range
-    temperatur      (0, 100)
+#   pin   name
+    14    1:tønne
+    15    1:mikrofon
+    18    2:tønne
+    23    2:mikrofon
+    24    3:tønne
+    25    3:mikrofon
