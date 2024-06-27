@@ -57,7 +57,7 @@ def restart(signum, frame):
 def stop(signum, frame):
     print ('Stopping... (signal {})'.format(signum))
 
-    global hardware, main
+    global main, hardware
     main.clear()
     hardware.clear()
 

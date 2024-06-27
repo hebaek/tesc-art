@@ -93,15 +93,17 @@ class Hardware():
 
 
 
-    def read(self, target):
-        print ('reading from pin {:>2} to variable {}'.format(self.targets[target]['pin'], target))
+    def read(self, input):
         if config.REAL_PI:
-            self.buffer[target] = GPIO.input(self.targets[target]['pin'])
+            self.buffer[input] = GPIO.input(self.targets[input]['pin'])
+
+        print ('reading pin {:>2}: [{:6}]'.format(self.targets[input]['pin'], self.buffer[input]))
+        return self.buffer[input]
 
 
 
     def write(self, target, cmd):
-        print ('writing to pin {:>2}: [{:6}] - {}'.format(self.targets[target]['pin'], cmd, target))
+        print ('writing pin {:>2}: [{:6}] - {}'.format(self.targets[target]['pin'], cmd, target))
         if cmd == 'on':     self.buffer[target] |= 1
         if cmd == 'off':    self.buffer[target] &= 0
         if cmd == 'toggle': self.buffer[target]  = (self.buffer[target] + 1) % 2
