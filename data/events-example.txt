@@ -76,7 +76,7 @@ schedule:
 chain: boot
 #  --------------------+--------------------+--------+-------------------+---------------
 #     delay before cmd |   +/- random delay |        |                   |
-#   dd hh:mm:ss.micros | dd hh:mm:ss:micros | cmd    | target            | parameters
+#   dd:hh:mm:ss.micros | dd:hh:mm:ss:micros | cmd    | target            | parameters
 #  --------------------+--------------------+--------+-------------------+---------------
                                              start    chain_1
                                              start    chain_2
@@ -90,7 +90,7 @@ chain: boot
 chain: chain_1
 #  --------------------+--------------------+--------+-------------------+---------------
 #     delay before cmd |   +/- random delay |        |                   |
-#   dd hh:mm:ss.micros | dd hh:mm:ss:micros | cmd    | target            | parameters
+#   dd:hh:mm:ss.micros | dd:hh:mm:ss:micros | cmd    | target            | parameters
 #  --------------------+--------------------+--------+-------------------+---------------
               0.5                   .25       on       1:tønne
               0.5                   .25       off      1:mikrofon
@@ -118,7 +118,7 @@ chain: chain_1
 chain: chain_2
 #  --------------------+--------------------+--------+-------------------+---------------
 #     delay before cmd |   +/- random delay |        |                   |
-#   dd hh:mm:ss.micros | dd hh:mm:ss:micros | cmd    | target            | parameters
+#   dd:hh:mm:ss.micros | dd:hh:mm:ss:micros | cmd    | target            | parameters
 #  --------------------+--------------------+--------+-------------------+---------------
               1                               on       3:tønne
               0                               off      3:mikrofon
@@ -130,7 +130,7 @@ chain: chain_2
 chain: chain_3
 #  --------------------+--------------------+--------+-------------------+---------------
 #     delay before cmd |   +/- random delay |        |                   |
-#   dd hh:mm:ss.micros | dd hh:mm:ss:micros | cmd    | target            | parameters
+#   dd:hh:mm:ss.micros | dd:hh:mm:ss:micros | cmd    | target            | parameters
 #  --------------------+--------------------+--------+-------------------+---------------
 
 
@@ -139,7 +139,7 @@ chain: chain_3
 chain: startchain
 #  --------------------+--------------------+--------+-------------------+---------------
 #     delay before cmd |   +/- random delay |        |                   |
-#   dd hh:mm:ss.micros | dd hh:mm:ss:micros | cmd    | target            | parameters
+#   dd:hh:mm:ss.micros | dd:hh:mm:ss:micros | cmd    | target            | parameters
 #  --------------------+--------------------+--------+-------------------+---------------
                                               reset    boot
                                               start    boot
@@ -150,7 +150,7 @@ chain: startchain
 chain: stopchain
 #  --------------------+--------------------+--------+-------------------+---------------
 #     delay before cmd |   +/- random delay |        |                   |
-#   dd hh:mm:ss.micros | dd hh:mm:ss:micros | cmd    | target            | parameters
+#   dd:hh:mm:ss.micros | dd:hh:mm:ss:micros | cmd    | target            | parameters
 #  --------------------+--------------------+--------+-------------------+---------------
                                               stop     chain_1
                                               stop     chain_2
