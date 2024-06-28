@@ -136,8 +136,11 @@ class Main():
             self.hardware.write(event.target, event.cmd)
 
         ''' Variable commands '''
-        if event.cmd == 'set':
-            self.variables.set(event.target, event.params)
+        if event.cmd == 'set': self.variables.set(event.target, event.params)
+        if event.cmd == 'add': self.variables.add(event.target, event.params)
+        if event.cmd == 'sub': self.variables.sub(event.target, event.params)
+        if event.cmd == 'inc': self.variables.inc(event.target)
+        if event.cmd == 'dec': self.variables.dec(event.target)
 
         if event.cmd == 'read':
             value = self.hardware.read(event.params)

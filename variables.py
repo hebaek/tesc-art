@@ -57,10 +57,49 @@ class Variables():
         self.variables[name].define(data)
 
 
+
+    def add(self, name, value):
+        if not name in self.variables: return
+
+        value_analysis = parse_value(value)
+        if   value_analysis['type'] == 'value':    value = value_analysis['value']
+        elif value_analysis['type'] == 'variable': value = self.variables[value_analysis['variable']].get_value()
+
+        self.variables[name].add(value)
+
+
+
+    def sub(self, name, value):
+        if not name in self.variables: return
+
+        value_analysis = parse_value(value)
+        if   value_analysis['type'] == 'value':    value = value_analysis['value']
+        elif value_analysis['type'] == 'variable': value = self.variables[value_analysis['variable']].get_value()
+
+        self.variables[name].sub(value)
+
+
+
+    def inc(self, name):
+        if not name in self.variables: return
+        self.variables[name].inc()
+
+
+
+    def dec(self, name):
+        if not name in self.variables: return
+        self.variables[name].dec()
+
+
+
     def set(self, name, value):
         if not name in self.variables: return
+
+        value_analysis = parse_value(value)
+        if   value_analysis['type'] == 'value':    value = value_analysis['value']
+        elif value_analysis['type'] == 'variable': value = self.variables[value_analysis['variable']].get_value()
+
         self.variables[name].set(value)
-        print (name, 'is set to', value)
 
 
 
@@ -138,18 +177,11 @@ class Variable():
 
 
 
-    def set(self, value):
-        value_analysis = parse_value(value)
-        if   value_analysis['type'] == 'value':    self.value = value_analysis['value']
-        elif value_analysis['type'] == 'range':    self.value = value_analysis['range']
-        elif value_analysis['type'] == 'variable': self.value = value_analysis['variable']
+    def set(self, value): self.value  = value
+    def add(self, value): self.value += value
+    def sub(self, value): self.value -= value
+    def inc(self):        self.value += 1
+    def dec(self):        self.value -= 1
 
-
-
-    def get_value(self):
-        return self.value
-
-
-
-    def get_tests(self):
-        return self.tests
+    def get_value(self):  return self.value
+    def get_tests(self):  return self.tests

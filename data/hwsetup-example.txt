@@ -6,7 +6,9 @@ interrupts:
 
 inputs:
 #   pin   name
-    16    termometer
+     9    sensor_1
+    10    sensor_2
+
 
 outputs:
 #   pin   name

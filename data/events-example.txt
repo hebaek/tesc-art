@@ -11,14 +11,14 @@ variables:
 #  ---------------+------+------------------+--------+-------------------+---------------
 #   Variable name | comp | value            | cmd    | target            | parameters
 #  ---------------+------+------------------+--------+-------------------+---------------
-    temperatur       ==    0                  start    chain_1
-    temperatur       !=    1                  stop     chain_1
-    temperatur       <=    temp2              start    chain_3
-    temperatur       >=    temp2              stop     chain_3
-    temperatur       IN    (20,22)            start    chain_2
-    temperatur      !IN    (20,22)            set      temp2               -10
-    temp2            <     temperatur         set      temp2                1
-    temp2            >     temperatur         set      temp2               -1
+    tilstede_1       ==    0                  start    chain_1
+    tilstede_1       !=    1                  stop     chain_1
+    tilstede_1       <=    temp2              start    chain_3
+    tilstede_1       >=    temp2              stop     chain_3
+    tilstede_1       IN    (20,22)            start    chain_2
+    tilstede_1      !IN    (20,22)            set      temp2               -10
+    temp2            <     tilstede_1         set      temp2                1
+    temp2            >     tilstede_1         set      temp2               -1
 
 
 
@@ -80,9 +80,13 @@ chain: boot
 #  --------------------+--------------------+--------+-------------------+---------------
                                              start    chain_1
                                              start    chain_2
-             2                               read     temperatur          termometer
-             1                               react    temperatur
+             2                               read     tilstede_1          sensor_1
+             1                               react    tilstede_1
              1                               react    temp2
+             1                               inc      tilstede_1
+             1                               dec      tilstede_1
+             1                               add      tilstede_1          temp2
+             1                               sub      tilstede_1          2
          10:00                               stop     boot
 
 

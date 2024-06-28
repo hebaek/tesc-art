@@ -10,7 +10,8 @@ class Event():
         'quit',
         'start', 'stop', 'reset',
         'on', 'off', 'toggle', 'random',
-        'set', 'read', 'react',
+        'set', 'add', 'sub', 'inc', 'dec',
+        'read', 'react',
     ]
 
 
