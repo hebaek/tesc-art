@@ -6,6 +6,10 @@ from random import randrange
 # Local imports
 import config
 
+from file import parse_file
+
+
+
 # Try to import GPIO. If it succeeds, we are probably on a real Raspberry PI
 try:
     import RPi.GPIO as GPIO
@@ -45,15 +49,7 @@ class Hardware():
 
 
     def load(self, filename):
-        lines = []
-
-        try:
-            with open(filename) as f:
-                filedata = f.read()
-                lines = [line for line in filedata.split('\n') if len(line) > 1 and line[0] != '#']
-
-        except Exception:
-            print('Can\'t open setup file!')
+        lines = parse_file(filename)
 
         context = None
         for line in lines:

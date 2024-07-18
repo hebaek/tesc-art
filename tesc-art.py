@@ -6,6 +6,8 @@ import pwd
 
 import config
 
+from file     import parse_file, load_config
+
 from hardware import Hardware
 from main     import Main
 
@@ -15,21 +17,6 @@ conf     = {}
 hardware = None
 main     = None
 quit     = False
-
-
-
-def load_config():
-    print ('Loading config...')
-
-    with open(config.CONFIG_FILE) as f:
-        filedata = f.read()
-        lines = [line for line in filedata.split('\n') if len(line) > 0 and line[0] != '#']
-
-        for line in lines:
-            words = line.split()
-            conf[words[0]] = words[1]
-
-    return conf
 
 
 
@@ -77,7 +64,8 @@ def reload(signum, frame):
 
 
 if __name__ == '__main__':
-    load_config()
+    data = parse_file(config.CONFIG_FILE)
+    conf = load_config(data)
 
     signal.signal(signal.SIGHUP,  restart)
     signal.signal(signal.SIGINT,  stop)
