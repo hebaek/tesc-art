@@ -8,6 +8,8 @@ from time     import sleep
 # Local imports
 import config
 
+from file      import parse_file
+
 from event     import Event, ChainEvent, ScheduleEvent
 from variables import Variables
 
@@ -63,16 +65,7 @@ class Main():
     def load(self, filename):
         print('main: load')
 
-        lines  = []
-
-        try:
-            with open(filename) as f:
-                filedata = f.read()
-                lines = [line for line in filedata.split('\n') if len(line) > 1 and line[0] != '#']
-
-        except Exception:
-            print('Can\'t open events file!')
-
+        lines = parse_file(filename)
 
         context, chain = None, None
         for line in lines:
