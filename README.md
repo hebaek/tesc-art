@@ -12,7 +12,7 @@ This tool lets you control the GPIO of a Raspberry Pi using simple lists of time
 ### Installing
 * Download a copy of tesc-art using `git clone https://github.com/hebaek/tesc-art`
 * Install GPIO using `sudo apt install python3-rpi-lgpio`
-* In the tesc-art directory, run `sudo make install user=$(whoami) home=~`.
+* In the tesc-art directory, run `sudo make install user=$(whoami) home=~`
 * Copy the example files and start scripting!
 
 
