@@ -1,4 +1,7 @@
+import sys
 import re
+
+
 
 commands = [
     'quit',
@@ -25,7 +28,7 @@ def parse_file(filename):
                 result.append(string.strip())
 
     except:
-        pass
+        print(f'Could not open file "{filename}"', file=sys.stderr)
 
     return result
 
