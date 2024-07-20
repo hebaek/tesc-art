@@ -19,14 +19,14 @@ This tool lets you control the GPIO of a Raspberry Pi using simple lists of time
 ## The files you need to worry about
 
 ### tesc-art.conf
-This contains the file names of your chosen setup and events-files.
+This contains the file names of your chosen hardware setup and events files.
 
 ### hwsetup.txt
 This file is a mapping between GPIO pins and target names.
 The section headers in this file defines if the pin is an interrupt, an input or an output.
 
 ### events.txt
-This file is the bread and butter of your application. It has two types of lists:
+This file is the bread and butter of your application. It has four types of lists:
 * variables
 * interrupts
 * schedule
@@ -42,14 +42,14 @@ You trigger a reaction with the command `react`.
 In the interrupts section, you define events to be fired from interrupts. This should probably be to start or stop a chain.
 
 #### schedule
-In the schedule section, you define events which will trigger at specific dates, days and times.
-The date type contains a date and time. It you omit a part of the date or time, it will trigger every time the rest matches.
-The day type contains a weekday and time. It you omit a part of the time, it will trigger every time the rest matches.
+In the schedule section, you define events which will trigger at specific times on specific dates or weekdays.
+The timespec is written in `hh:mm:ss`-format, and optionally a `weekday` or a `date`. Se the example file for details about formats.
+It you omit a part of the date or time, it will trigger every time the rest of the timespec matches.
 A special schedule type `boot` triggers at lauch.
 
 #### chains
 A chain is a looping list of timed events. It contains a delay consisting of a fixed and a random part, a command and a target.
-The target are the ones defined in `setup.txt`, and the command is one of the following:
+The target are the ones defined in `hwsetup.txt`, and the command is one of the following:
 ```
 quit
 
