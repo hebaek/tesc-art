@@ -108,9 +108,6 @@ class Variables():
 
 
     def react(self, name):
-        for var in self.variables:
-            print (var, self.variables[var].get_value())
-
         if not name in self.variables: return
 
         events = []
