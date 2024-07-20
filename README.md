@@ -63,7 +63,7 @@ toggle <target>
 random <target>
 
 set    <variable> <value|variable>
-read   <variable> <target>
+read   <variable> <input>
 react  <variable>
 ```
 
