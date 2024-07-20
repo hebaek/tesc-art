@@ -6,7 +6,7 @@ import pwd
 
 import config
 
-from file     import parse_file, load_config
+from file     import parse_file, load_config, load_events
 
 from hardware import Hardware
 from main     import Main

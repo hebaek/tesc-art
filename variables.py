@@ -9,11 +9,15 @@ from event     import Event, ChainEvent, ScheduleEvent
 def parse_value(value):
     result = {}
 
+    # Already a number
     if type(value) == type(  int(0)): return {'type': 'value', 'value': value }
     if type(value) == type(float(0)): return {'type': 'value', 'value': value }
 
+    # Empty string
+    if value == '': return None
+
     # Integer
-    if re.match('^[+-]?[0-9]*$', value):
+    elif re.match('^[+-]?[0-9]*$', value):
         result['type' ] = 'value'
         result['value'] = int(value)
 
@@ -154,24 +158,18 @@ class Variable():
 
     def define(self, data):
         test = {
-            'comp':       None,
-            'cmd':        None,
-            'target':     None,
-            'parameters': None,
+            'comp':   data['comp'],
+            'cmd':    data['cmd'],
+            'target': data['target'],
+            'params': data['params'],
         }
 
-        if (len(data) > 0): test['comp']       = data[0]
-        if (len(data) > 2): test['cmd']        = data[2]
-        if (len(data) > 3): test['target']     = data[3]
-        if (len(data) > 4): test['parameters'] = data[4]
+        test['event'] = Event(test)
 
-        test['event'] = Event([test['cmd'], test['target'], test['parameters']])
-
-        if (len(data) > 1):
-            value_analysis = parse_value(data[1])
-            if   value_analysis['type'] == 'value':    test['value']    = value_analysis['value']
-            elif value_analysis['type'] == 'range':    test['range']    = value_analysis['range']
-            elif value_analysis['type'] == 'variable': test['variable'] = value_analysis['variable']
+        value_analysis = parse_value(data['value'])
+        if   value_analysis['type'] == 'value':    test['value']    = value_analysis['value']
+        elif value_analysis['type'] == 'range':    test['range']    = value_analysis['range']
+        elif value_analysis['type'] == 'variable': test['variable'] = value_analysis['variable']
 
         self.tests.append(test)
 

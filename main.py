@@ -8,7 +8,7 @@ from time     import sleep
 # Local imports
 import config
 
-from file      import parse_file
+from file      import parse_file, load_events
 
 from event     import Event, ChainEvent, ScheduleEvent
 from variables import Variables
@@ -35,7 +35,7 @@ class Main():
         self.eventqueue.queue.clear()
 
         if self.mainthread.is_alive():
-            self.eventqueue.put(Event(['quit']))
+            self.eventqueue.put(Event({ 'cmd': 'quit' }))
             self.mainthread.join()
 
 
@@ -66,34 +66,26 @@ class Main():
         print('main: load')
 
         lines = parse_file(filename)
+        data = load_events(lines)
 
-        context, chain = None, None
-        for line in lines:
-            words = line.split()
+        for variable in data['variables']:
+            for definition in data['variables'][variable]:
+                self.variables.define(variable, definition)
 
-            if   words[0] == 'variables:':  (context, chain) = ('variables',  None)
-            elif words[0] == 'interrupts:': (context, chain) = ('interrupts', None)
-            elif words[0] == 'schedule:':   (context, chain) = ('schedule',   None)
+        for interrupt in data['interrupts']:
+            id = interrupt['name']
+            if not id in self.interrupts: self.interrupts[id] = []
+            self.interrupts[id].append(Event(interrupt))
 
-            elif words[0] == 'chain:':
-                (context, chain) = ('chain', words[1])
-                self.cmdqueue[chain] = queue.Queue()
-                self.thread[chain]   = threading.Thread(target=self.chain_thread, args=(chain, self.cmdqueue[chain], self.eventqueue,))
+        for schedule in data['schedule']:
+            self.cmdqueue['_scheduler'].put({ 'action': 'add', 'data': ScheduleEvent(schedule) })
 
-            elif context == 'variables':
-                name = words.pop(0)
-                self.variables.define(name, words)
+        for chain in data['chains']:
+            self.cmdqueue[chain] = queue.Queue()
+            self.thread[chain]   = threading.Thread(target=self.chain_thread, args=(chain, self.cmdqueue[chain], self.eventqueue,))
 
-            elif context == 'interrupts':
-                id = words.pop(0)
-                if not id in self.interrupts: self.interrupts[id] = []
-                self.interrupts[id].append(Event(words))
-
-            elif context == 'schedule':
-                self.cmdqueue['_scheduler'].put({ 'action': 'add', 'data': ScheduleEvent(words) })
-
-            elif context == 'chain':
-                self.cmdqueue[chain].put({ 'action': 'add', 'data': ChainEvent(words) })
+            for event in data['chains'][chain]:
+                self.cmdqueue[chain].put({ 'action': 'add', 'data': ChainEvent(event) })
 
 
 
