@@ -7,8 +7,8 @@ commands = [
     'quit',
     'start', 'stop', 'reset',
     'on', 'off', 'toggle', 'random',
-    'set', 'add', 'sub', 'inc', 'dec',
-    'read', 'react',
+    'set', 'read', 'react',
+    'add', 'sub', 'inc', 'dec',
 ]
 
 

@@ -65,6 +65,11 @@ random <target>
 set    <variable> <value|variable>
 read   <variable> <input>
 react  <variable>
+
+add    <variable> <value|variable>
+sub    <variable> <value|variable>
+inc    <variable>
+dec    <variable>
 ```
 
 
