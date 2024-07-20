@@ -12,9 +12,6 @@ inputs:
 
 outputs:
 #   pin   name
-    14    1:tønne
-    15    1:mikrofon
-    18    2:tønne
-    23    2:mikrofon
-    24    3:tønne
-    25    3:mikrofon
+    14    motor_1
+    15    motor_2
+    18    motor_3

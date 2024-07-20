@@ -1,3 +1,13 @@
+#########################################################################################
+#
+#   Variables
+#   Interrupts
+#   Schedule
+#
+#########################################################################################
+
+
+
 variables:
 #  ---------------+------+------------------+--------+-------------------+---------------
 #                 |  ==  | equal to value
@@ -11,14 +21,15 @@ variables:
 #  ---------------+------+------------------+--------+-------------------+---------------
 #   Variable name | comp | value            | cmd    | target            | parameters
 #  ---------------+------+------------------+--------+-------------------+---------------
-    tilstede_1       ==    0                  start    chain_1
-    tilstede_1       !=    1                  stop     chain_1
-    tilstede_1       <=    temp2              start    chain_3
-    tilstede_1       >=    temp2              stop     chain_3
-    tilstede_1       IN    (20,22)            start    chain_2
-    tilstede_1      !IN    (20,22)            set      temp2               -10
-    temp2            <     tilstede_1         set      temp2                1
-    temp2            >     tilstede_1         set      temp2               -1
+    counter_1        ==    0                  start    chain_1
+    counter_1        !=    1                  stop     chain_1
+    counter_1        <=    counter_2          start    chain_2
+    counter_1        >=    counter_2          stop     chain_2
+    counter_1        IN    (20,22)            start    chain_1
+    counter_1       !IN    (20,22)            set      counter_1           -10
+
+    counter_2        <     counter_1          set      counter_2            1
+    counter_2        >     counter_1          set      counter_2           -1
 
 
 
@@ -34,31 +45,29 @@ interrupts:
 
 schedule:
 #  -------------------+---------------------+--------+-------------------+--------------
-#   boot or           | YYYY-MM-DD/hh:mm:ss |        |                   |
-#   date or day       |    weekday/hh:mm:ss | cmd    | target            | parameters
+#                     |                boot |        |                   |
+#                     |            hh:mm:ss |        |                   |
+#                     |    weekday/hh:mm:ss |        |                   |
+#                     | YYYY-MM-DD/hh:mm:ss | cmd    | target            | parameters
 #  -------------------+---------------------+--------+-------------------+--------------
-    boot                                      start    boot
+                                       boot   start    boot
 
-    date                                 00   start    startchain
-    date                                 10   start    startchain
-    date                                 20   start    startchain
-    date                                 30   start    startchain
-    date                                 40   start    startchain
-    date                                 50   start    startchain
-    date                              16:22   start    startchain
-    date                           14:16:22   start    startchain
-    date                        25/14:16:22   start    startchain
-    date                     06-25/14:16:22   start    startchain
-    date                2024-06-25/14:16:22   start    startchain
+                                   --:--:30   start    startchain
+                                   --:20:30   start    startchain
+                                   10:--:30   start    startchain
+                                   10:20:30   start    startchain
 
-    day                    mondays/14:16:22   quit
-    day                   tuesdays/14:16:22   quit
-    day                        thursdays/00   start    startchain
-    day                        thursdays/10   start    startchain
-    day                        thursdays/20   start    startchain
-    day                        thursdays/30   start    startchain
-    day                        thursdays/40   start    startchain
-    day                        thursdays/50   start    startchain
+                           mondays/14:16:22   quit
+                          tuesdays/14:16:22   quit
+                         thursdays/--:10:10   start    startchain
+                         thursdays/--:--:10   start    startchain
+
+                                25/--:--:10   start    startchain
+                                25/--:16:22   start    startchain
+                                25/14:--:22   start    startchain
+                                25/14:16:22   start    startchain
+                             06-25/14:16:22   start    startchain
+                        2024-06-25/14:16:22   start    startchain
 
 
 
@@ -80,63 +89,14 @@ chain: boot
 #  --------------------+--------------------+--------+-------------------+---------------
                                              start    chain_1
                                              start    chain_2
-             2                               read     tilstede_1          sensor_1
-             1                               react    tilstede_1
-             1                               react    temp2
-             1                               inc      tilstede_1
-             1                               dec      tilstede_1
-             1                               add      tilstede_1          temp2
-             1                               sub      tilstede_1          2
+             2                               read     counter_1           sensor_1
+             1                               react    counter_1
+             1                               react    counter_2
+             1                               inc      counter_1
+             1                               dec      counter_1
+             1                               add      counter_1           counter_2
+             1                               sub      counter_1           2
          10:00                               stop     boot
-
-
-
-chain: chain_1
-#  --------------------+--------------------+--------+-------------------+---------------
-#     delay before cmd |   +/- random delay |        |                   |
-#   dd:hh:mm:ss.micros | dd:hh:mm:ss:micros | cmd    | target            | parameters
-#  --------------------+--------------------+--------+-------------------+---------------
-              0.5                   .25       on       1:tønne
-              0.5                   .25       off      1:mikrofon
-              0.5                   .25       toggle   2:tønne
-              0.5                   .25       random   2:mikrofon
-              0.5                   .25       toggle   1:tønne
-              0.5                   .25       on       1:mikrofon
-              0.5                   .25       off      2:tønne
-              0.5                   .25       toggle   2:mikrofon
-              0.5                   .25       random   1:tønne
-              0.5                   .25       toggle   1:mikrofon
-              0.5                   .25       on       2:tønne
-              0.5                   .25       off      2:mikrofon
-              0.5                   .25       toggle   1:tønne
-              0.5                   .25       random   1:mikrofon
-              0.5                   .25       toggle   2:tønne
-              0.5                   .25       on       2:mikrofon
-              0.5                   .25       off      1:tønne
-              0.5                   .25       toggle   1:mikrofon
-              0.5                   .25       random   2:tønne
-              0.5                   .25       toggle   2:mikrofon
-
-
-
-chain: chain_2
-#  --------------------+--------------------+--------+-------------------+---------------
-#     delay before cmd |   +/- random delay |        |                   |
-#   dd:hh:mm:ss.micros | dd:hh:mm:ss:micros | cmd    | target            | parameters
-#  --------------------+--------------------+--------+-------------------+---------------
-              1                               on       3:tønne
-              0                               off      3:mikrofon
-              1                               off      3:tønne
-              0                               on       3:mikrofon
-
-
-
-chain: chain_3
-#  --------------------+--------------------+--------+-------------------+---------------
-#     delay before cmd |   +/- random delay |        |                   |
-#   dd:hh:mm:ss.micros | dd:hh:mm:ss:micros | cmd    | target            | parameters
-#  --------------------+--------------------+--------+-------------------+---------------
-
 
 
 
@@ -159,3 +119,29 @@ chain: stopchain
                                               stop     chain_1
                                               stop     chain_2
                                               stop     stopchain
+
+
+
+chain: chain_1
+#  --------------------+--------------------+--------+-------------------+---------------
+#     delay before cmd |   +/- random delay |        |                   |
+#   dd:hh:mm:ss.micros | dd:hh:mm:ss:micros | cmd    | target            | parameters
+#  --------------------+--------------------+--------+-------------------+---------------
+              0.5                   .25       on       motor_1
+              0.5                   .25       off      motor_2
+              0.5                   .25       toggle   motor_3
+              0.5                   .25       random   motor_1
+              0.5                   .25       toggle   motor_2
+              0.5                   .25       on       motor_3
+
+
+
+chain: chain_2
+#  --------------------+--------------------+--------+-------------------+---------------
+#     delay before cmd |   +/- random delay |        |                   |
+#   dd:hh:mm:ss.micros | dd:hh:mm:ss:micros | cmd    | target            | parameters
+#  --------------------+--------------------+--------+-------------------+---------------
+              1                               on       motor_1
+              0                               off      motor_2
+              1                               off      motor_1
+              0                               on       motor_2
