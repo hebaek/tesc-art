@@ -80,6 +80,13 @@ def load_events(lines):
             data['chains'][chain] = []
 
         elif context == 'variables':
+            cmdindex = None
+            for i in range(0, len(words)):
+                if words[i] in commands: cmdindex = i
+
+            if cmdindex != 3:
+                print(f'Error in variable definition:', line, file=sys.stderr)
+
             name   = words[0] if len(words) > 0 else None
             comp   = words[1] if len(words) > 1 else None
             value  = words[2] if len(words) > 2 else None
@@ -92,6 +99,13 @@ def load_events(lines):
                 data['variables'][name].append({ 'comp': comp, 'value': value, 'cmd': cmd, 'target': target, 'params': params })
 
         elif context == 'interrupts':
+            cmdindex = None
+            for i in range(0, len(words)):
+                if words[i] in commands: cmdindex = i
+
+            if cmdindex != 1:
+                print(f'Error in interrupt definition:', line, file=sys.stderr)
+
             name   = words[0] if len(words) > 0 else None
             cmd    = words[1] if len(words) > 1 else None
             target = words[2] if len(words) > 2 else None
@@ -101,6 +115,13 @@ def load_events(lines):
                 data['interrupts'].append({ 'name': name, 'cmd': cmd, 'target': target, 'params': params })
 
         elif context == 'schedule':
+            cmdindex = None
+            for i in range(0, len(words)):
+                if words[i] in commands: cmdindex = i
+
+            if cmdindex != 1:
+                print(f'Error in schedule definition:', line, file=sys.stderr)
+
             timestring = words[0] if len(words) > 0 else None
             cmd        = words[1] if len(words) > 1 else None
             target     = words[2] if len(words) > 2 else None
@@ -116,6 +137,9 @@ def load_events(lines):
             cmdindex = None
             for i in range(0, len(words)):
                 if words[i] in commands: cmdindex = i
+
+            if cmdindex > 2:
+                print(f'Error in event definition for chain {chain}:', line, file=sys.stderr)
 
             if cmdindex == 1: words.insert(1, '')
             if cmdindex == 0: words = ['', ''] + words

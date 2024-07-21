@@ -70,14 +70,26 @@ class Main():
 
         for variable in data['variables']:
             for definition in data['variables'][variable]:
+                if not all([m in definition for m in ['comp', 'value', 'cmd']]):
+                    print (f'Invalid variable definition for {variable}:', definition)
+                    continue
+
                 self.variables.define(variable, definition)
 
         for interrupt in data['interrupts']:
+            if not all([m in interrupt for m in ['name', 'cmd']]):
+                print ('Invalid interrupt:', interrupt)
+                continue
+
             id = interrupt['name']
             if not id in self.interrupts: self.interrupts[id] = []
             self.interrupts[id].append(Event(interrupt))
 
         for schedule in data['schedule']:
+            if not all([m in schedule for m in ['time', 'cmd']]):
+                print ('Invalid schedule:', schedule)
+                continue
+
             self.cmdqueue['_scheduler'].put({ 'action': 'add', 'data': ScheduleEvent(schedule) })
 
         for chain in data['chains']:
@@ -85,6 +97,10 @@ class Main():
             self.thread[chain]   = threading.Thread(target=self.chain_thread, args=(chain, self.cmdqueue[chain], self.eventqueue,))
 
             for event in data['chains'][chain]:
+                if not all([m in event for m in ['delay', 'random', 'cmd']]):
+                    print (f'Invalid event in chain {chain}:', event)
+                    continue
+
                 self.cmdqueue[chain].put({ 'action': 'add', 'data': ChainEvent(event) })
 
 

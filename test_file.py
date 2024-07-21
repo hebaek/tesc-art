@@ -65,20 +65,20 @@ class TestLoadEvents(unittest.TestCase):
         })
 
     def test_load_events_interrupts_correct(self):
-        data = file.load_events(['interrupts:', 'name cmd target params'])
+        data = file.load_events(['interrupts:', 'name on target params'])
         self.assertEqual(data, {
             'variables':  {},
-            'interrupts': [{ 'name': 'name', 'cmd': 'cmd', 'target': 'target', 'params': 'params' }],
+            'interrupts': [{ 'name': 'name', 'cmd': 'on', 'target': 'target', 'params': 'params' }],
             'schedule':   [],
             'chains':     {},
         })
 
     def test_load_events_schedule_boot_correct(self):
-        data = file.load_events(['schedule:', 'boot cmd target params'])
+        data = file.load_events(['schedule:', 'boot on target params'])
         self.assertEqual(data, {
             'variables':  {},
             'interrupts': [],
-            'schedule':   [{ 'time': { 'type': 'boot' }, 'cmd': 'cmd', 'target': 'target', 'params': 'params' }],
+            'schedule':   [{ 'time': { 'type': 'boot' }, 'cmd': 'on', 'target': 'target', 'params': 'params' }],
             'chains':     {},
         })
 
@@ -92,16 +92,16 @@ class TestLoadEvents(unittest.TestCase):
         })
 
     def test_load_events_schedule_time_correct(self):
-        data = file.load_events(['schedule:', '11:22:33 cmd target params'])
+        data = file.load_events(['schedule:', '11:22:33 on target params'])
         self.assertEqual(data, {
             'variables':  {},
             'interrupts': [],
-            'schedule':   [{ 'time': { 'type': 'time', 'h': 11, 'm': 22, 's': 33 }, 'cmd': 'cmd', 'target': 'target', 'params': 'params' }],
+            'schedule':   [{ 'time': { 'type': 'time', 'h': 11, 'm': 22, 's': 33 }, 'cmd': 'on', 'target': 'target', 'params': 'params' }],
             'chains':     {},
         })
 
     def test_load_events_schedule_time_incomplete(self):
-        data = file.load_events(['schedule:', '11:22 cmd target params'])
+        data = file.load_events(['schedule:', '11:22 on target params'])
         self.assertEqual(data, {
             'variables':  {},
             'interrupts': [],
@@ -110,7 +110,7 @@ class TestLoadEvents(unittest.TestCase):
         })
 
     def test_load_events_schedule_time_excessive(self):
-        data = file.load_events(['schedule:', '11:22:33:44 cmd target params'])
+        data = file.load_events(['schedule:', '11:22:33:44 on target params'])
         self.assertEqual(data, {
             'variables':  {},
             'interrupts': [],
@@ -120,76 +120,76 @@ class TestLoadEvents(unittest.TestCase):
 
     def test_load_events_schedule_time_wrong(self):
         data = file.load_events(['schedule:',
-            '-1:22:33 cmd target params',
-            'xx:22:33 cmd target params',
-              ':22:33 cmd target params',
-            '24:22:33 cmd target params',
-            '11:-1:33 cmd target params',
-            '11:xx:33 cmd target params',
-              '11::33 cmd target params',
-            '11:60:33 cmd target params',
-            '11:22:-1 cmd target params',
-            '11:22:xx cmd target params',
-            '11:22:   cmd target params',
-            '11:22:60 cmd target params',
+            '-1:22:33 on target params',
+            'xx:22:33 on target params',
+              ':22:33 on target params',
+            '24:22:33 on target params',
+            '11:-1:33 on target params',
+            '11:xx:33 on target params',
+              '11::33 on target params',
+            '11:60:33 on target params',
+            '11:22:-1 on target params',
+            '11:22:xx on target params',
+            '11:22:   on target params',
+            '11:22:60 on target params',
         ])
         self.assertEqual(data, {
             'variables':  {},
             'interrupts': [],
             'schedule':   [
-                { 'time': { 'type': 'time', 'h': None, 'm':   22, 's':   33 }, 'cmd': 'cmd', 'target': 'target', 'params': 'params' },
-                { 'time': { 'type': 'time', 'h': None, 'm':   22, 's':   33 }, 'cmd': 'cmd', 'target': 'target', 'params': 'params' },
-                { 'time': { 'type': 'time', 'h': None, 'm':   22, 's':   33 }, 'cmd': 'cmd', 'target': 'target', 'params': 'params' },
-                { 'time': { 'type': 'time', 'h': None, 'm':   22, 's':   33 }, 'cmd': 'cmd', 'target': 'target', 'params': 'params' },
-                { 'time': { 'type': 'time', 'h':   11, 'm': None, 's':   33 }, 'cmd': 'cmd', 'target': 'target', 'params': 'params' },
-                { 'time': { 'type': 'time', 'h':   11, 'm': None, 's':   33 }, 'cmd': 'cmd', 'target': 'target', 'params': 'params' },
-                { 'time': { 'type': 'time', 'h':   11, 'm': None, 's':   33 }, 'cmd': 'cmd', 'target': 'target', 'params': 'params' },
-                { 'time': { 'type': 'time', 'h':   11, 'm': None, 's':   33 }, 'cmd': 'cmd', 'target': 'target', 'params': 'params' },
-                { 'time': { 'type': 'time', 'h':   11, 'm':   22, 's': None }, 'cmd': 'cmd', 'target': 'target', 'params': 'params' },
-                { 'time': { 'type': 'time', 'h':   11, 'm':   22, 's': None }, 'cmd': 'cmd', 'target': 'target', 'params': 'params' },
-                { 'time': { 'type': 'time', 'h':   11, 'm':   22, 's': None }, 'cmd': 'cmd', 'target': 'target', 'params': 'params' },
-                { 'time': { 'type': 'time', 'h':   11, 'm':   22, 's': None }, 'cmd': 'cmd', 'target': 'target', 'params': 'params' },
+                { 'time': { 'type': 'time', 'h': None, 'm':   22, 's':   33 }, 'cmd': 'on', 'target': 'target', 'params': 'params' },
+                { 'time': { 'type': 'time', 'h': None, 'm':   22, 's':   33 }, 'cmd': 'on', 'target': 'target', 'params': 'params' },
+                { 'time': { 'type': 'time', 'h': None, 'm':   22, 's':   33 }, 'cmd': 'on', 'target': 'target', 'params': 'params' },
+                { 'time': { 'type': 'time', 'h': None, 'm':   22, 's':   33 }, 'cmd': 'on', 'target': 'target', 'params': 'params' },
+                { 'time': { 'type': 'time', 'h':   11, 'm': None, 's':   33 }, 'cmd': 'on', 'target': 'target', 'params': 'params' },
+                { 'time': { 'type': 'time', 'h':   11, 'm': None, 's':   33 }, 'cmd': 'on', 'target': 'target', 'params': 'params' },
+                { 'time': { 'type': 'time', 'h':   11, 'm': None, 's':   33 }, 'cmd': 'on', 'target': 'target', 'params': 'params' },
+                { 'time': { 'type': 'time', 'h':   11, 'm': None, 's':   33 }, 'cmd': 'on', 'target': 'target', 'params': 'params' },
+                { 'time': { 'type': 'time', 'h':   11, 'm':   22, 's': None }, 'cmd': 'on', 'target': 'target', 'params': 'params' },
+                { 'time': { 'type': 'time', 'h':   11, 'm':   22, 's': None }, 'cmd': 'on', 'target': 'target', 'params': 'params' },
+                { 'time': { 'type': 'time', 'h':   11, 'm':   22, 's': None }, 'cmd': 'on', 'target': 'target', 'params': 'params' },
+                { 'time': { 'type': 'time', 'h':   11, 'm':   22, 's': None }, 'cmd': 'on', 'target': 'target', 'params': 'params' },
             ],
             'chains':     {},
         })
 
     def test_load_events_schedule_weekday_correct(self):
-        data = file.load_events(['schedule:', 'mondays/11:22:33 cmd target params'])
+        data = file.load_events(['schedule:', 'mondays/11:22:33 on target params'])
         self.assertEqual(data, {
             'variables':  {},
             'interrupts': [],
-            'schedule':   [{ 'time': { 'type': 'weekday', 'weekday': 'mondays', 'h': 11, 'm': 22, 's': 33 }, 'cmd': 'cmd', 'target': 'target', 'params': 'params' }],
+            'schedule':   [{ 'time': { 'type': 'weekday', 'weekday': 'mondays', 'h': 11, 'm': 22, 's': 33 }, 'cmd': 'on', 'target': 'target', 'params': 'params' }],
             'chains':     {},
         })
 
     def test_load_events_schedule_date_correct(self):
-        data = file.load_events(['schedule:', '2024-01-02/11:22:33 cmd target params'])
+        data = file.load_events(['schedule:', '2024-01-02/11:22:33 on target params'])
         self.assertEqual(data, {
             'variables':  {},
             'interrupts': [],
-            'schedule':   [{ 'time': { 'type': 'date', 'Y': 2024, 'M': 1, 'D': 2, 'h': 11, 'm': 22, 's': 33 }, 'cmd': 'cmd', 'target': 'target', 'params': 'params' }],
+            'schedule':   [{ 'time': { 'type': 'date', 'Y': 2024, 'M': 1, 'D': 2, 'h': 11, 'm': 22, 's': 33 }, 'cmd': 'on', 'target': 'target', 'params': 'params' }],
             'chains':     {},
         })
 
     def test_load_events_schedule_date_wrong(self):
         data = file.load_events(['schedule:',
-            '2024-13-02/11:22:33 cmd target params',
-            '2024-xx-02/11:22:33 cmd target params',
-              '2024--02/11:22:33 cmd target params',
-            '2024-01-32/11:22:33 cmd target params',
-            '2024-01-xx/11:22:33 cmd target params',
-              '2024-01-/11:22:33 cmd target params',
+            '2024-13-02/11:22:33 on target params',
+            '2024-xx-02/11:22:33 on target params',
+              '2024--02/11:22:33 on target params',
+            '2024-01-32/11:22:33 on target params',
+            '2024-01-xx/11:22:33 on target params',
+              '2024-01-/11:22:33 on target params',
         ])
         self.assertEqual(data, {
             'variables':  {},
             'interrupts': [],
             'schedule':   [
-                { 'time': { 'type': 'date', 'Y': 2024, 'M': None, 'D':    2, 'h': 11, 'm': 22, 's': 33 }, 'cmd': 'cmd', 'target': 'target', 'params': 'params' },
-                { 'time': { 'type': 'date', 'Y': 2024, 'M': None, 'D':    2, 'h': 11, 'm': 22, 's': 33 }, 'cmd': 'cmd', 'target': 'target', 'params': 'params' },
-                { 'time': { 'type': 'date', 'Y': 2024, 'M': None, 'D':    2, 'h': 11, 'm': 22, 's': 33 }, 'cmd': 'cmd', 'target': 'target', 'params': 'params' },
-                { 'time': { 'type': 'date', 'Y': 2024, 'M':    1, 'D': None, 'h': 11, 'm': 22, 's': 33 }, 'cmd': 'cmd', 'target': 'target', 'params': 'params' },
-                { 'time': { 'type': 'date', 'Y': 2024, 'M':    1, 'D': None, 'h': 11, 'm': 22, 's': 33 }, 'cmd': 'cmd', 'target': 'target', 'params': 'params' },
-                { 'time': { 'type': 'date', 'Y': 2024, 'M':    1, 'D': None, 'h': 11, 'm': 22, 's': 33 }, 'cmd': 'cmd', 'target': 'target', 'params': 'params' },
+                { 'time': { 'type': 'date', 'Y': 2024, 'M': None, 'D':    2, 'h': 11, 'm': 22, 's': 33 }, 'cmd': 'on', 'target': 'target', 'params': 'params' },
+                { 'time': { 'type': 'date', 'Y': 2024, 'M': None, 'D':    2, 'h': 11, 'm': 22, 's': 33 }, 'cmd': 'on', 'target': 'target', 'params': 'params' },
+                { 'time': { 'type': 'date', 'Y': 2024, 'M': None, 'D':    2, 'h': 11, 'm': 22, 's': 33 }, 'cmd': 'on', 'target': 'target', 'params': 'params' },
+                { 'time': { 'type': 'date', 'Y': 2024, 'M':    1, 'D': None, 'h': 11, 'm': 22, 's': 33 }, 'cmd': 'on', 'target': 'target', 'params': 'params' },
+                { 'time': { 'type': 'date', 'Y': 2024, 'M':    1, 'D': None, 'h': 11, 'm': 22, 's': 33 }, 'cmd': 'on', 'target': 'target', 'params': 'params' },
+                { 'time': { 'type': 'date', 'Y': 2024, 'M':    1, 'D': None, 'h': 11, 'm': 22, 's': 33 }, 'cmd': 'on', 'target': 'target', 'params': 'params' },
             ],
             'chains':     {},
         })
