@@ -7,8 +7,9 @@ from copy     import deepcopy
 
 class Event():
     def __init__(self, data):
-        self.cmd = data['cmd']
+        if not 'cmd' in data: data['cmd'] = 'noop'
 
+        if 'cmd'    in data: self.cmd    = data['cmd']
         if 'target' in data: self.target = data['target']
         if 'params' in data: self.params = data['params']
 
@@ -19,10 +20,13 @@ class Event():
 
 class ChainEvent(Event):
     def __init__(self, data):
+        if not 'delay'  in data: data['delay']  = {'days': 0, 'hours': 0, 'minutes': 0, 'seconds': 0, 'microseconds': 0 }
+        if not 'random' in data: data['random'] = {'days': 0, 'hours': 0, 'minutes': 0, 'seconds': 0, 'microseconds': 0 }
+
         super().__init__(data)
 
-        self.delay  = data['delay']
-        self.random = data['random']
+        if 'delay'  in data: self.delay  = data['delay' ]
+        if 'random' in data: self.random = data['random']
 
 
 
@@ -40,9 +44,11 @@ class ChainEvent(Event):
 
 class ScheduleEvent(Event):
     def __init__(self, data):
+        if not 'time' in data: data['time'] = { 'type': 'none' }
+
         super().__init__(data)
 
-        self.time   = data['time']
+        if 'time' in data: self.time = data['time']
         self.active = True
 
 
