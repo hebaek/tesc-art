@@ -15,6 +15,10 @@ This tool lets you control the GPIO of a Raspberry Pi using simple lists of time
 * In the tesc-art directory, run `sudo make install user=$(whoami) home=~`
 * Copy the example files and start scripting!
 
+* To run automatically at boot, do the following:
+- run `crontab -e`
+- add the line `@reboot /usr/bin/tesc-art start`
+
 
 ## The files you need to worry about
 
