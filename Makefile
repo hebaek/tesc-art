@@ -16,4 +16,4 @@ install:	$(home)/data
 	install -o $(user) -g $(user) -m 644 -t $(home)/data/ data/events-example.txt
 	install -o $(user) -g $(user) -m 644 -t $(home)/data/ data/tesc-art.conf
 
-	install -o $(user) -g $(user) -m 755 -t $(home)       tesc.sh
+	install -o $(user) -g $(user) -m 755 -t /usr/bin/     tesc-art
