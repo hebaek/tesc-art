@@ -1,17 +1,17 @@
 interrupts:
 #   pin   name
-    17    stopinterrupt
-    22    startinterrupt
-    27    quitinterrupt
+    16    stopinterrupt
+    18    startinterrupt
+    22    quitinterrupt
 
 inputs:
 #   pin   name
-     9    sensor_1
-    10    sensor_2
+    38    sensor_1
+    40    sensor_2
 
 
 outputs:
 #   pin   name
-    14    motor_1
-    15    motor_2
-    18    motor_3
+    19    motor_1
+    21    motor_2
+    23    motor_3
