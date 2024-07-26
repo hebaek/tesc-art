@@ -1,3 +1,4 @@
+import logging
 import sys
 import re
 
@@ -10,6 +11,16 @@ commands = [
     'set', 'read', 'react',
     'add', 'sub', 'inc', 'dec',
 ]
+
+comparators = [
+    '==', '!=', '<=', '>=', '<', '>',
+    'IN', '!IN',
+]
+
+
+
+logger = logging.getLogger(__name__)
+
 
 
 def parse_file(filename):
@@ -28,7 +39,7 @@ def parse_file(filename):
                 result.append(string.strip())
 
     except:
-        print(f'Could not open file "{filename}"', file=sys.stderr)
+        logger.error(f'Could not open file "{filename}"')
 
     return result
 
@@ -85,7 +96,8 @@ def load_events(lines):
                 if words[i] in commands: cmdindex = i
 
             if cmdindex != 3:
-                print(f'Error in variable definition:', line, file=sys.stderr)
+                logger.error(f'Error in variable definition:', line)
+                continue
 
             name   = words[0] if len(words) > 0 else None
             comp   = words[1] if len(words) > 1 else None
@@ -93,6 +105,10 @@ def load_events(lines):
             cmd    = words[3] if len(words) > 3 else None
             target = words[4] if len(words) > 4 else None
             params = words[5] if len(words) > 5 else None
+
+            if comp not in comparators:
+                logger.error(f'Error in variable definition:', line)
+                continue
 
             if name and comp and value and cmd:
                 if not name in data['variables']: data['variables'][name] = []
@@ -104,7 +120,8 @@ def load_events(lines):
                 if words[i] in commands: cmdindex = i
 
             if cmdindex != 1:
-                print(f'Error in interrupt definition:', line, file=sys.stderr)
+                logger.error(f'Error in interrupt definition:', line)
+                continue
 
             name   = words[0] if len(words) > 0 else None
             cmd    = words[1] if len(words) > 1 else None
@@ -120,7 +137,8 @@ def load_events(lines):
                 if words[i] in commands: cmdindex = i
 
             if cmdindex != 1:
-                print(f'Error in schedule definition:', line, file=sys.stderr)
+                logger.error(f'Error in schedule definition:', line)
+                continue
 
             timestring = words[0] if len(words) > 0 else None
             cmd        = words[1] if len(words) > 1 else None
@@ -139,7 +157,8 @@ def load_events(lines):
                 if words[i] in commands: cmdindex = i
 
             if cmdindex > 2:
-                print(f'Error in event definition for chain {chain}:', line, file=sys.stderr)
+                logger.error(f'Error in event definition for chain {chain}:', line)
+                continue
 
             if cmdindex == 1: words.insert(1, '')
             if cmdindex == 0: words = ['', ''] + words
@@ -224,3 +243,134 @@ def parse_delaystring(delaystring):
     result = dict(zip(keys, values))
 
     return result
+
+
+
+def read_file(filename):
+    result = []
+    linenum = 0
+
+    try:
+        with open(filename) as f:
+            filedata = f.read()
+            for line in filedata.split('\n'):
+                linenum += 1
+                line = line.strip()
+                if len(line) == 0 or line[0] == '#': continue
+
+                inline_comment = line.find('#')
+                string = line if inline_comment == -1 else line[:inline_comment]
+                words = [word.strip() for word in line.split()]
+
+                result.append({ 'line': linenum, 'words': words })
+
+    except:
+        logger.error(f'Could not open file "{filename}"')
+
+    return result
+
+
+
+def parse_events_file(lines):
+    commands = [
+        'quit',
+        'start', 'stop', 'reset',
+        'on', 'off', 'toggle', 'random',
+        'set', 'read', 'react',
+        'add', 'sub', 'inc', 'dec',
+    ]
+
+    comparators = [
+        '==', '!=', '<=', '>=', '<', '>',
+        'IN', '!IN',
+    ]
+
+
+
+    result  = []
+    context = None
+    chain   = None
+
+    for line in lines:
+        linenum = line['line']
+        words   = line['words']
+
+        cmdindex = None
+        for i in range(0, len(words)):
+            if words[i] in commands: cmdindex = i
+
+        if   words    == ['variables:' ]: context = 'variables'
+        elif words    == ['interrupts:']: context = 'interrupts'
+        elif words    == ['schedule:'  ]: context = 'schedule'
+        elif words[0] == 'chain:':        context = 'chain'; chain = words[1]
+
+        elif context == 'variables':
+            if len(words) < 6: words = words + [None, None, None, None, None, None]
+            if cmdindex == -1:              badline(line, 'no command'        ); continue
+            if words[1] not in comparators: badline(line, 'invalid comparator'); continue
+            if words[3] not in commands:    badline(line, 'invalid command'   ); continue
+
+            result.append({ 'variable': {
+                'name':   words[0],
+                'comp':   words[1],
+                'value':  words[2],
+                'cmd':    words[3],
+                'target': words[4],
+                'params': words[5],
+            }})
+
+        elif context == 'interrupts':
+            if len(words) < 4: words = words + [None, None, None, None]
+            if cmdindex == -1:           badline(line, 'no command'     ); continue
+            if words[1] not in commands: badline(line, 'invalid command'); continue
+
+            result.append({ 'interrupt': {
+                'name':   words[0],
+                'cmd':    words[1],
+                'target': words[2],
+                'params': words[3],
+            }})
+
+        elif context == 'schedule':
+            if len(words) < 4: words = words + [None, None, None, None]
+            if cmdindex == -1:           badline(line, 'no command'     ); continue
+            if words[1] not in commands: badline(line, 'invalid command'); continue
+
+            result.append({ 'schedule': {
+                'name':   words[0],
+                'cmd':    words[1],
+                'target': words[2],
+                'params': words[3],
+            }})
+
+        elif context == 'chain':
+            if len(words) < 5: words = words + [None, None, None, None, None]
+            if cmdindex == -1: badline(line, 'no command'); continue
+            if cmdindex == 0: words = [None, None] + words
+            if cmdindex == 1: words = [words[0]] + [None] + words[1:]
+            if words[2] not in commands: badline(line, 'invalid command'); continue
+
+            result.append({ 'chain': {
+                'chain':  chain,
+                'delay':  words[0],
+                'random': words[1],
+                'cmd':    words[2],
+                'target': words[3],
+                'params': words[4],
+            }})
+
+    return result
+
+
+
+def badline(line, reason):
+    logger.error(f'{reason} in line {line['line']}: "{' '.join(line['words'])}"')
+
+
+
+if __name__ == '__main__':
+    lines = read_file('data/events-example.txt')
+    data  = parse_events_file(lines)
+
+    for line in data:
+        print(line)

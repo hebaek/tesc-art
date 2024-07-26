@@ -1,6 +1,7 @@
 # Public imports
 import threading
 import queue
+import logging
 
 from datetime import datetime
 from time     import sleep
@@ -15,9 +16,13 @@ from variables import Variables
 
 
 
+logger = logging.getLogger(__name__)
+
+
+
 class Main():
     def __init__(self, hardware):
-        print('main: setup')
+        logger.info('setup')
         self.hardware   = hardware
         self.variables  = Variables()
 
@@ -31,7 +36,7 @@ class Main():
 
 
     def clear(self):
-        print('main: clear')
+        logger.info('clear')
         self.eventqueue.queue.clear()
 
         if self.mainthread.is_alive():
@@ -41,7 +46,7 @@ class Main():
 
 
     def reset(self):
-        print('main: reset')
+        logger.info('reset')
 
         self.hardware.reset()
         self.variables.reset()
@@ -63,33 +68,21 @@ class Main():
 
 
     def load(self, filename):
-        print('main: load')
+        logger.info('load')
 
         lines = parse_file(filename)
         data = load_events(lines)
 
         for variable in data['variables']:
             for definition in data['variables'][variable]:
-                if not all([m in definition for m in ['comp', 'value', 'cmd']]):
-                    print (f'Invalid variable definition for {variable}:', definition)
-                    continue
-
                 self.variables.define(variable, definition)
 
         for interrupt in data['interrupts']:
-            if not all([m in interrupt for m in ['name', 'cmd']]):
-                print ('Invalid interrupt:', interrupt)
-                continue
-
             id = interrupt['name']
             if not id in self.interrupts: self.interrupts[id] = []
             self.interrupts[id].append(Event(interrupt))
 
         for schedule in data['schedule']:
-            if not all([m in schedule for m in ['time', 'cmd']]):
-                print ('Invalid schedule:', schedule)
-                continue
-
             self.cmdqueue['_scheduler'].put({ 'action': 'add', 'data': ScheduleEvent(schedule) })
 
         for chain in data['chains']:
@@ -97,16 +90,12 @@ class Main():
             self.thread[chain]   = threading.Thread(target=self.chain_thread, args=(chain, self.cmdqueue[chain], self.eventqueue,))
 
             for event in data['chains'][chain]:
-                if not all([m in event for m in ['delay', 'random', 'cmd']]):
-                    print (f'Invalid event in chain {chain}:', event)
-                    continue
-
                 self.cmdqueue[chain].put({ 'action': 'add', 'data': ChainEvent(event) })
 
 
 
     def run(self):
-        print('main: run')
+        logger.info('run')
         self.mainthread.start()
 
 
@@ -114,11 +103,11 @@ class Main():
     def event_run(self, event):
         ''' Quit '''
         if event.cmd == 'quit':
-            print('{}'.format(event.cmd))
+            logger.info(f'{event.cmd}')
             self.eventqueue.queue.clear()
 
             for chain in self.cmdqueue:
-                print('Quitting', chain)
+                logger.info(f'Quitting {chain}')
                 self.cmdqueue[chain].queue.clear()
 
                 self.cmdqueue[chain].put({ 'action': 'quit' })
@@ -129,7 +118,7 @@ class Main():
 
         ''' Chain commands '''
         if event.cmd in ['start', 'stop', 'reset']:
-            print('{} {}'.format(event.cmd, event.target))
+            logger.info(f'{event.cmd} {event.target}')
             self.cmdqueue[event.target].put({ 'action': event.cmd })
 
         ''' Output commands '''
@@ -146,7 +135,7 @@ class Main():
         if event.cmd == 'read':
             value = self.hardware.read(event.params)
             self.variables.set(event.target, value)
-            print ('setting variable {}: {}'.format(event.target, value))
+            logger.info (f'setting variable {event.target}: {value}')
 
         if event.cmd == 'react':
             events = self.variables.react(event.target)
@@ -158,7 +147,7 @@ class Main():
 
 
     def main_thread(self, eventqueue):
-        print('Hello! I\'m main')
+        logger.info('Hello! I\'m main')
 
         for chain in self.thread:
             self.thread[chain].start()
@@ -170,7 +159,7 @@ class Main():
                     (type, id) = self.hardware.interrupt.get()
 
                     if type in self.interrupts and id in self.interrupts[type]:
-                        print('INTERRUPT! {} {}'.format(type, id))
+                        logger.info(f'INTERRUPT! {type} {id}')
                         for event in self.interrupts[type][id]:
                             quit = quit | self.event_run(event)
 
@@ -182,12 +171,12 @@ class Main():
                 quit = quit | self.event_run(event)
 
 
-        print('Bye from main')
+        logger.info('Bye from main')
 
 
 
     def scheduler_thread(self, cmdqueue, eventqueue):
-        print('Hello! I\'m the scheduler')
+        logger.info('Hello! I\'m the scheduler')
 
         events    = []
         counter   = 0
@@ -215,12 +204,12 @@ class Main():
 
 
         events.clear()
-        print('Bye from the scheduler')
+        logger.info('Bye from the scheduler')
 
 
 
     def chain_thread(self, name, cmdqueue, eventqueue):
-        print('Hello! I\'m {}'.format(name))
+        logger.info(f'Hello! I\'m {name}')
 
         events    = []
         counter   = 0
@@ -253,4 +242,4 @@ class Main():
 
 
         events.clear()
-        print('Bye from {}'.format(name))
+        logger.info(f'Bye from {name}')

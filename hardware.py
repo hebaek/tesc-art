@@ -1,4 +1,5 @@
 # Public imports
+import logging
 import queue
 
 from random import randrange
@@ -10,19 +11,23 @@ from file import parse_file
 
 
 
+logger = logging.getLogger(__name__)
+
+
+
 # Try to import GPIO. If it succeeds, we are probably on a real Raspberry PI
 try:
     import RPi.GPIO as GPIO
     config.REAL_PI = True
 
 except ImportError:
-    print ('No pi...')
+    logger.error('No pi...')
 
 
 
 class Hardware():
     def __init__(self, filename):
-        print('hardware: setup')
+        logger.info('setup')
 
         self.interrupt = queue.Queue()
         self.targets   = {}
@@ -66,7 +71,7 @@ class Hardware():
 
 
     def clear(self):
-        print('hardware: clear')
+        logger.info('clear')
         if config.REAL_PI:
             GPIO.cleanup()
 
@@ -84,7 +89,7 @@ class Hardware():
 
     def interrupt_handler(self, pin):
         for target in [x for x in self.targets if self.targets[x]['type'] == 'interrupt' and self.targets[x]['pin'] == pin]:
-            print('hardware: interrupt_handler - {}'.format(target))
+            logger.info('interrupt_handler - {}'.format(target))
             self.interrupt.put(('GPIO', '{}'.format(target)))
 
 
@@ -93,13 +98,13 @@ class Hardware():
         if config.REAL_PI:
             self.buffer[input] = GPIO.input(self.targets[input]['pin'])
 
-        print ('reading pin {:>2}: [{:6}]'.format(self.targets[input]['pin'], self.buffer[input]))
+        logger.info('reading pin {:>2}: [{:6}]'.format(self.targets[input]['pin'], self.buffer[input]))
         return self.buffer[input]
 
 
 
     def write(self, target, cmd):
-        print ('writing pin {:>2}: [{:6}] - {}'.format(self.targets[target]['pin'], cmd, target))
+        logger.info('writing pin {:>2}: [{:6}] - {}'.format(self.targets[target]['pin'], cmd, target))
         if cmd == 'on':     self.buffer[target] |= 1
         if cmd == 'off':    self.buffer[target] &= 0
         if cmd == 'toggle': self.buffer[target]  = (self.buffer[target] + 1) % 2
