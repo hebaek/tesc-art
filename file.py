@@ -364,7 +364,7 @@ def parse_events_file(lines):
 
 
 def badline(line, reason):
-    logger.error(f'{reason} in line {line['line']}: "{' '.join(line['words'])}"')
+    logger.error(f'{reason} in line {line["line"]}: "{" ".join(line["words"])}"')
 
 
 
