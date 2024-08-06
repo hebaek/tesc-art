@@ -96,7 +96,7 @@ def load_events(lines):
                 if words[i] in commands: cmdindex = i
 
             if cmdindex != 3:
-                logger.error(f'Error in variable definition:', line)
+                logger.error(f'Error in variable definition: {line}')
                 continue
 
             name   = words[0] if len(words) > 0 else None
@@ -107,7 +107,7 @@ def load_events(lines):
             params = words[5] if len(words) > 5 else None
 
             if comp not in comparators:
-                logger.error(f'Error in variable definition:', line)
+                logger.error(f'Error in variable definition: {line}')
                 continue
 
             if name and comp and value and cmd:
@@ -120,7 +120,7 @@ def load_events(lines):
                 if words[i] in commands: cmdindex = i
 
             if cmdindex != 1:
-                logger.error(f'Error in interrupt definition:', line)
+                logger.error(f'Error in interrupt definition: {line}')
                 continue
 
             name   = words[0] if len(words) > 0 else None
@@ -137,7 +137,7 @@ def load_events(lines):
                 if words[i] in commands: cmdindex = i
 
             if cmdindex != 1:
-                logger.error(f'Error in schedule definition:', line)
+                logger.error(f'Error in schedule definition: {line}')
                 continue
 
             timestring = words[0] if len(words) > 0 else None
@@ -157,7 +157,7 @@ def load_events(lines):
                 if words[i] in commands: cmdindex = i
 
             if cmdindex > 2:
-                logger.error(f'Error in event definition for chain {chain}:', line)
+                logger.error(f'Error in event definition for chain {chain}: {line}')
                 continue
 
             if cmdindex == 1: words.insert(1, '')
