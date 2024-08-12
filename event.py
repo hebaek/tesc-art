@@ -80,9 +80,9 @@ class ScheduleEvent(Event):
                 testtime.year,
                 testtime.month,
                 testtime.day,
-                temptime['h'] if temptime['h'] else testtime.hour,
-                temptime['m'] if temptime['m'] else testtime.minute,
-                temptime['s'] if temptime['s'] else testtime.sexond,
+                temptime['hour'  ] if isinstance(temptime['hour'  ], int) else testtime.hour,
+                temptime['minute'] if isinstance(temptime['minute'], int) else testtime.minute,
+                temptime['second'] if isinstance(temptime['second'], int) else testtime.second,
             )
 
             if self.active == False and eventtime < testtime.replace(microsecond=0):
@@ -97,12 +97,12 @@ class ScheduleEvent(Event):
         elif self.time['type'] == 'date':
             temptime = deepcopy(self.time)
             eventtime = datetime(
-                temptime['Y'] if temptime['Y'] else testtime.year,
-                temptime['M'] if temptime['M'] else testtime.month,
-                temptime['D'] if temptime['D'] else testtime.day,
-                temptime['h'] if temptime['h'] else testtime.hour,
-                temptime['m'] if temptime['m'] else testtime.minute,
-                temptime['s'] if temptime['s'] else testtime.second,
+                temptime['year'  ] if isinstance(temptime['year'  ], int) else testtime.year,
+                temptime['month' ] if isinstance(temptime['month' ], int) else testtime.month,
+                temptime['day'   ] if isinstance(temptime['day'   ], int) else testtime.day,
+                temptime['hour'  ] if isinstance(temptime['hour'  ], int) else testtime.hour,
+                temptime['minute'] if isinstance(temptime['minute'], int) else testtime.minute,
+                temptime['second'] if isinstance(temptime['second'], int) else testtime.second,
             )
 
             if self.active == False and eventtime < testtime.replace(microsecond=0):
