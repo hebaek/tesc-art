@@ -191,13 +191,13 @@ def parse_timestring(timestring):
         parts = timestring.split(':')
         if len(parts) != 3: return result
 
-        result['h'] = None
-        result['m'] = None
-        result['s'] = None
+        result['hour'  ] = None
+        result['minute'] = None
+        result['second'] = None
 
-        if re.fullmatch('[01][0-9]|[2][0-3]', parts[0]): result['h'] = int(parts[0])
-        if re.fullmatch('[0-5][0-9]',         parts[1]): result['m'] = int(parts[1])
-        if re.fullmatch('[0-5][0-9]',         parts[2]): result['s'] = int(parts[2])
+        if re.fullmatch('[01][0-9]|[2][0-3]', parts[0]): result['hour'  ] = int(parts[0])
+        if re.fullmatch('[0-5][0-9]',         parts[1]): result['minute'] = int(parts[1])
+        if re.fullmatch('[0-5][0-9]',         parts[2]): result['second'] = int(parts[2])
 
         result['type'] = 'time'
 
@@ -214,13 +214,13 @@ def parse_timestring(timestring):
         parts = parts[0].split('-')
         if len(parts) != 3: return result
 
-        result['Y'] = None
-        result['M'] = None
-        result['D'] = None
+        result['year' ] = None
+        result['month'] = None
+        result['day'  ] = None
 
-        if re.fullmatch('[2][0-9]{3}',        parts[0]): result['Y'] = int(parts[0])
-        if re.fullmatch('[0][0-9]|[1][0-2]',  parts[1]): result['M'] = int(parts[1])
-        if re.fullmatch('[0-2][0-9]|[3][01]', parts[2]): result['D'] = int(parts[2])
+        if re.fullmatch('[2][0-9]{3}',        parts[0]): result['year' ] = int(parts[0])
+        if re.fullmatch('[0][0-9]|[1][0-2]',  parts[1]): result['month'] = int(parts[1])
+        if re.fullmatch('[0-2][0-9]|[3][01]', parts[2]): result['day'  ] = int(parts[2])
 
         result['type'] = 'date'
 
