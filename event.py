@@ -74,6 +74,26 @@ class ScheduleEvent(Event):
 
 
 
+        elif self.time['type'] == 'time':
+            temptime = deepcopy(self.time)
+            eventtime = datetime(
+                testtime.Y,
+                testtime.M,
+                testtime.D,
+                temptime['h'] if temptime['h'] else testtime.h,
+                temptime['m'] if temptime['m'] else testtime.m,
+                temptime['s'] if temptime['s'] else testtime.s,
+            )
+
+            if self.active == False and eventtime < testtime.replace(microsecond=0):
+                self.active = True
+
+            elif self.active == True and eventtime == testtime.replace(microsecond=0):
+                self.active = False
+                return True
+
+
+
         elif self.time['type'] == 'date':
             temptime = deepcopy(self.time)
             eventtime = datetime(
