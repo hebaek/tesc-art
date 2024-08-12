@@ -156,11 +156,11 @@ class Main():
         while not quit:
             while eventqueue.empty():
                 while not self.hardware.interrupt.empty():
-                    (type, id) = self.hardware.interrupt.get()
+                    id = self.hardware.interrupt.get()
 
-                    if type in self.interrupts and id in self.interrupts[type]:
-                        logger.info(f'INTERRUPT! {type} {id}')
-                        for event in self.interrupts[type][id]:
+                    if id in self.interrupts:
+                        logger.info(f'INTERRUPT! {id}')
+                        for event in self.interrupts[id]:
                             quit = quit | self.event_run(event)
 
                 sleep(0.01)

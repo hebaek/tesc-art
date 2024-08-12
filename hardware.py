@@ -90,7 +90,7 @@ class Hardware():
     def interrupt_handler(self, pin):
         for target in [x for x in self.targets if self.targets[x]['type'] == 'interrupt' and self.targets[x]['pin'] == pin]:
             logger.info('interrupt_handler - {}'.format(target))
-            self.interrupt.put(('GPIO', '{}'.format(target)))
+            self.interrupt.put(target)
 
 
 
