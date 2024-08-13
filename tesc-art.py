@@ -16,7 +16,6 @@ from main     import Main
 
 conf     = {}
 logger   = logging.getLogger(__name__)
-logging.basicConfig(format='%(asctime)s:%(levelname)s:%(message)s', level=logging.DEBUG)
 
 hardware = None
 main     = None
@@ -71,7 +70,7 @@ if __name__ == '__main__':
     data = parse_file(config.CONFIG_FILE)
     conf = load_config(data)
 
-    logging.basicConfig(filename=conf['logfile'], filemode='w', level=logging.INFO)
+    logging.basicConfig(filename=conf['logfile'], filemode='w', format='%(asctime)s:%(levelname)s:%(message)s', level=logging.INFO)
 
     signal.signal(signal.SIGHUP,  restart)
     signal.signal(signal.SIGINT,  stop)
