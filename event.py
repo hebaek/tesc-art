@@ -14,6 +14,16 @@ class Event():
         'add', 'sub', 'inc', 'dec',
     ]
 
+    weekdays = [
+        'mondays',
+        'tuesdays',
+        'wednesdays',
+        'thursdays',
+        'fridays',
+        'saturdays',
+        'sundays',
+    ]
+
     def __init__(self, data):
         self.cmd    = 'noop'
         self.target = None
@@ -115,7 +125,8 @@ class ScheduleEvent(Event):
 
 
         elif self.time['type'] == 'weekday':
-            if self.time['weekday'] != testtime.weekday(): return False
+            if self.time['weekday'] not in Event.weekdays: return False
+            if self.time['weekday'] != Event.weekdays[testtime.weekday()]: return False
 
             temptime = deepcopy(self.time)
             eventtime = datetime(
